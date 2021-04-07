@@ -1,0 +1,58 @@
+{% extends "base_template.html" %}
+{% block css %}new_account{% endblock %}
+{% block main %}
+<div>
+    <form method="post" class="edit_account">
+        <div>
+            <label>Editing account: {{ info.get("username") }}</label>
+        </div>
+        <div>
+            <div class="item">
+                <label for="username">Username: </label>
+                <input type="text" id="username" value="{{ info.get("username") }}" name="username" />
+            </div>
+            <div class="item">
+                <label for="password">Password: </label>
+                <input type="password" id="password" name="password" />
+            </div>
+            <div class="item">
+                <label for="passwordVerify">Verify Password: </label>
+                <input type="password" id="passwordVerify" name="passwordVerify" />
+            </div>
+            <div class="item">
+                <label for="userLVL">User Access Level: </label>
+                <select name="userLVL" id="userLVL">
+                    <option value="0" {% if (info.get("user_lvl")) == 0 %} selected {% endif %}>Admin</option>
+                    <option value="1" {% if (info.get("user_lvl")) == 1 %} selected {% endif %}>NPLB User</option>
+                    <option value="3" {% if (info.get("user_lvl")) == 3 %} selected {% endif %}>Pound</option>
+                    <option value="5" {% if (info.get("user_lvl")) == 5 %} selected {% endif %}>Rescue</option>
+                </select>
+            </div>
+            <div class="item">
+                <label for="rescueID">Rescue ID (Optional): </label>
+                <select name="rescueID" id="rescueID">
+                    <option value="">None</option>
+                {% for rescue in rescue_pound_info.get("rescues") %}
+                    <option value="{{ rescue.rescueID }}" {% if info.get("rescue_id") == rescue.rescueID %} selected {% endif %}>{{ rescue.rescueName }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="item">
+                <label for="poundID">Pound ID (Optional): </label>
+                <select name="poundID" id="poundID">
+                    <option value="" selected>None</option>
+                {% for pound in rescue_pound_info.get("pounds") %}
+                    <option value="{{ pound.poundID }}" {% if info.get("pound_id") == pound.poundID %} selected {% endif %}>{{ pound.poundName }}</option>
+                {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div>
+            {% for message in errors %}
+            <span>{{ message }}</span>
+            {% endfor %}
+            <button type="submit" name="create">Apply</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

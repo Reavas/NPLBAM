@@ -1,0 +1,12 @@
+{% extends "base_template.html" %}
+{% block css %}animals{% endblock %}
+{% block main %}
+<div>
+        {% for message in errors %}
+        <div>{{ message }}</div>
+        {% endfor %}
+        <div id="button">
+            <a href="{{ redirect }}">Ok</a>
+        </div>
+</div>
+{% endblock %}

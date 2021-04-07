@@ -1,0 +1,39 @@
+{# Uses the inheritance to get from the base template page the head, header and navigation. Along with any footer #}
+{% extends "base_template.html" %}
+{# Add the css name to the file. #}
+{% block css %}form{% endblock %}
+{# Add the main method #}
+{% block main %} 
+<div>
+    <form method="post" enctype="multipart/form-data" action="/submit_csv">
+        <div class="item">
+            <label for="type">Type of Animal</label>
+            <select id="type" name="type">
+                {% for y in animal_types %}
+                <option value="{{y.name}}">{{y.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="item">
+            <label for="csv_file">CSV</label>
+            <input type="file" id="csv_file" name="csv_file" accept=".csv"/>
+        </div>
+        <div class="buttons">
+            <button type="submit" name="submit">Submit</button>   
+        </div>
+    </form> 
+    <h2>Criteria</h2>
+    <ul>
+        <li>Entries are not unique. Make sure you're not adding things already added before.</li>
+        <li>Files should be a CSV.</li>
+        <li>Should contain headers. Each header should be the same as the labels in the form. (Name, Status, etc)</li>
+        <li>All questions from the form must be in the CSV. Form meaning this application's new animal form.</li>
+        <li>Case matters.</li>
+        <li>Radio questions (questions where you choose one OR the other) should have the Label of the answer. (Stray, Surrender, Other)</li>
+        <li>Text questions should just be text</li>
+        <li>Checkbox questions (questions with multiple choices and can choose multiple) should be comma separated with labels of each.</li>
+        <li>This is the same way google forms outputs.</li>
+        <li><a href="static/csv-example.csv">Example</a></li>
+    </ul>
+</div>
+{% endblock %}

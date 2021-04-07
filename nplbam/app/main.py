@@ -1,8 +1,15 @@
+"""
+This module deals with the page presented to every unauthenticated
+user connecting to this application, and presents them the opportunity
+to login.
+"""
+
 from datetime import datetime
 
 import nacl.exceptions
 import nacl.pwhash
-from flask import Blueprint, current_app, redirect, render_template, request
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request)
 from flask import session as flask_session
 from flask import url_for
 from sqlalchemy.orm import Query, Session, relationship, sessionmaker
@@ -16,6 +23,7 @@ bp = Blueprint('index', __name__, url_prefix="")
 @bp.route("/index", methods=("GET", "POST"))
 def index():
     """
+    Page URL: /index and /
     Present login page to user, validate input, check login credentials,
     and give user a valid session.
     """
@@ -42,8 +50,7 @@ def index():
         # Credentials are possibly good, get the User from the database
         engine = db.get_db_engine()
         db_session: Session = (sessionmaker(bind=engine))()
-        user_entries: Query = db_session.query(db.Users)
-        user_entry: db.Users = user_entries.filter(
+        user_entry: db.Users = db_session.query(db.Users).filter(
             db.Users.username == username).first()
         db_session.close()
         # Check that the user exists, if not, then
@@ -79,8 +86,10 @@ def index():
         # If there were no errors, log the user in
         if len(errors) == 0:
             flask_session.clear()
+            flask_session.permanent = True
             flask_session["userID"] = user_entry.userID
             flask_session["userLVL"] = user_entry.userLVL
+            flash("Login Successful")
             return redirect("animals")
         else:
             return render_template("index.html", errors=errors)
@@ -90,5 +99,10 @@ def index():
 
 @bp.route('/logout')
 def logout():
+    """
+    Page URL: /logout
+    Clear the user's session, and send them back to the login
+    page.
+    """
     flask_session.clear()
     return redirect("/")

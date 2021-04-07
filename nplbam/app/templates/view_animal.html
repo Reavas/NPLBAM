@@ -6,6 +6,8 @@
 {% block main %} 
     <div>
         <form method="post"  action="/animal_viewed">
+            <input type="hidden" id="species" name="species" value="{{species}}">
+            <input type="hidden" id="animalId" name="animalId" value={{animalID}}>
             {# Go through the questions given to the template and put them to the screen. #}
             {#
             Questions come in the form of a LIST of groups. The groups is a dictionary containing a name an a list of subgroups.
@@ -55,16 +57,20 @@
                         {% elif question.type == "textarea" %}
                             <div class="item">
                                 <label for="{{question.name}}">{{question.label}}:</label>
-                                <textarea id="{{question.name}}" name="{{question.name}}" rows="4" value readonly>
-                                    {{predetermined[question.name]}}</textarea>
+                                <textarea id="{{question.name}}" name="{{question.name}}" rows="4" readonly>{{predetermined[question.name]}}</textarea>
                             </div>
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
             {% endfor %}
+            <h2>Export String</h2>
+            <textarea rows="10" readonly>{{view_string}}</textarea>        
             <div class="buttons">
-                <button type="submit" name="return">Return</button>   
+                <button type="submit" name="return" value="return">Return</button> 
+                {% if role < 4 %}
+                <button type="submit" name="edit" value="edit">Edit</button>   
+                {% endif %}
             </div>
-        </form>    
+        </form>
     </div>
 {% endblock %}

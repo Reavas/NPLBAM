@@ -1,0 +1,53 @@
+{% extends "base_template.html" %}
+{% block css %}animals{% endblock %}
+{% block main %}
+<div>
+    <form method="post" action="/organizations">
+        <div>
+            <label for="searchBy">Search By:</label>
+            <select id="searchBy" name="searchBy">
+                <option value="ID"  {% if (predetermined.search_by == "ID") %} selected {% endif %}>ID</option>
+                <option value="name"  {% if (predetermined.search_by == "name") %} selected {% endif %}>Name</option>
+            </select>
+            <input type="search" id="searchText" name="searchText">
+        </div>
+        <div>
+            <label for="both">Both</label>
+            <input type="radio" id="both" name="display" value=0 {%
+                if (predetermined.display==0) %}checked {% endif %}/>
+            <label for="rescue">Rescue</label>
+            <input type="radio" id="rescue" name="display" value=1 {%
+                if (predetermined.display==1) %}checked {% endif %}/>
+            <label for="pound">Pound</label>
+            <input type="radio" id="pound" name="display" value=2 {%
+                if (predetermined.display==2) %}checked {% endif %}/>
+            <button type="submit" name="refresh">Refresh</button> 
+        </div>
+         
+    </form>
+    <div id="button">
+        <a href="add_organization">New Organization</a>
+    </div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+        </tr>
+        {% for x in pounds%}
+        <tr onclick="window.location='edit_organization?type=1&editid={{x.poundID}}';">
+            <td><a href="edit_organization?type=1&editid={{x.poundID}}">{{x.poundID}}</a></td>
+            <td>{{x.poundName}}</td>
+            <td>Pound</td>
+        </tr>
+        {% endfor %}
+        {% for x in rescues%}
+        <tr onclick="window.location='edit_organization?type=0&editid={{x.rescueID}}';">
+            <td><a href="edit_organization?type=0&editid={{x.rescueID}}">{{x.rescueID}}</a></td>
+            <td>{{x.rescueName}}</td>
+            <td>Rescue</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

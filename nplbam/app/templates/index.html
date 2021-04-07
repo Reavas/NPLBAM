@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8" />
     <title>NPLB - Home</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="static/css/normalize.css" />
+    <link rel="stylesheet" href="static/css/styles.css" />
     <link rel="stylesheet" href="static/css/index.css" />
 </head>
 
@@ -15,11 +20,21 @@
             No Paw Left Behind
         </div>
         <div class="links">
-            <a href="https://www.facebook.com/NPLBDogs">Facebook</a>
             <a href="https://nopawleftbehind.ca">Main Site</a>
         </div>
     </header>
     <main>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class=flashes>
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
         <div>
             <form method="post" class="login">
                 <div>
@@ -40,7 +55,6 @@
                     <span>{{ message }}</span>
                     {% endfor %}
                     <button type="submit" name="login">Login</button>
-                    <p><a href="mailto:someone@example.com">Forgot Your Password?</a></p>
                 </div>
             </form>
         </div>

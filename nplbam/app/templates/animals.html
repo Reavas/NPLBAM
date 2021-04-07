@@ -2,53 +2,104 @@
 {% block css %}animals{% endblock %}
 {% block main %}
 <div>
-    <form>
+    <form method="post" action="/animals">
         <div>
             <label for="searchBy">Search By:</label>
             <select id="searchBy" name="searchBy">
-                <option value="ID" selected>ID</option>
-                <option value="name">Name</option>
-                <option value="species">Species</option>
-                <option value="stage">Stage</option>
+                <option value="name" {% if (predetermined.search_by == "name") %} selected {% endif %}>Name</option>
+                <option value="animalID" {% if (predetermined.search_by == "animalID") %} selected {% endif %}>ID
+                </option>
+                <option value="animalType" {% if (predetermined.search_by == "animalType") %} selected {% endif %}>
+                    Species</option>
+                <option value="stage" {% if (predetermined.search_by == "stage") %} selected {% endif %}>Stage</option>
             </select>
-            <input type="search" id="searchText" name="searchText">
-            <button type="submit" name="search">Search</button>
+            <input type="search" id="searchText" name="searchText" value="{{predetermined.search}}">
         </div>
-    </form>
-    <form>
         <div>
-            <label for="sortBy">Sort By:</label>
-            <select id="sortBy" name="sortBy">
-                <option value="ID" selected>ID</option>
-                <option value="name">Name</option>
-                <option value="species">Species</option>
-                <option value="stage">Stage</option>
-            </select>
-            <label for="asc">Asc</label>
-            <input type="radio" id="asc" name="order" value="asc">
-            <label for="desc">Desc</label>
-            <input type="radio" id="desc" name="order" value="desc">
-            <button type="submit" name="refresh">Filter</button>
+            <div>
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy" name="sortBy">
+                    <option value="animalID" {% if (predetermined.sort_by == "animalID") %} selected {% endif %}>ID
+                    </option>
+                    <option value="name" {% if (predetermined.sort_by == "name") %} selected {% endif %}>Name</option>
+                    <option value="animalType" {% if (predetermined.sort_by == "animalType") %} selected {% endif %}>
+                        Species</option>
+                    <option value="stage" {% if (predetermined.sort_by == "stage") %} selected {% endif %}>Stage
+                    </option>
+                </select>
+            </div>
+            <div>
+                <label for="asc">Asc</label>
+                <input {% if (predetermined.order == "asc") %} checked="checked" {% endif %} type="radio" id="asc"
+                    name="order" value="asc">
+            </div>
+            <div>
+                <label for="desc">Desc</label>
+                <input {% if (predetermined.order == "desc") %} checked="checked" {% endif %} type="radio" id="desc"
+                    name="order" value="desc">
+            </div>
+            <div>
+                {% if role < 2 %}
+                <input type="checkbox" id="hide_stuff" name="hide_stuff" value="hide_stuff"
+                    {% if (predetermined.hide_stuff == 1) %} checked {% endif %}>
+                <label for="hide_stuff">Hide Stage 0&8</label>
+                {% endif %}
+            </div>
+            <button type="submit" name="refresh">Go</button>
         </div>
     </form>
-    <button onclick="window.location.href='new_animal';">New Animal</button>
+    {% if role < 4 %}
+    <form method="post" action="/new_animal">
+        <select id="type" name="type">
+            {% for y in animal_types %}
+            <option value="{{y.name}}">{{y.name}}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="new_animal">New Animal</button>
+    </form>
+    {% endif %}
     <table cellspacing="0" cellpadding="0">
         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Species</th>
+            <th>Breed</th>
             <th>Stage</th>
             <th>Days in Stage</th>
+            <th>Creator</th>
         </tr>
         {% for x in animals %}
-        <tr>
+
+        {% if role < 2 %}
+        <tr onclick="window.location='gallery?viewid={{x.animalID}}';">
+            <td><a href="gallery?viewid={{x.animalID}}">{{x.animalID}}</a></td>
+            {% else %}
+        <tr onclick="window.location='view_animal?viewid={{x.animalID}}';">
             <td><a href="view_animal?viewid={{x.animalID}}">{{x.animalID}}</a></td>
+            {% endif %}
             <td>{{x.name}}</td>
             <td>{{x.animalType}}</td>
+            <td>{{x.breed}}</td>
             <td>{{x.stage}}</td>
             <td>{{x.days}}</td>
+            <td>{{x.creatorName}}</td>
         </tr>
         {% endfor %}
     </table>
+    <div id="pages">
+        {% if prev_url %}
+        <div id="button">
+            <a href="{{ prev_url }}">Back</a>
+        </div>
+        {% endif %}
+        <p>Page {{ page }}</p>
+        {% if next_url %}
+        <div id="button">
+            <a href="{{ next_url }}">Forward</a>
+        </div>
+        {% endif %}
+    </div>
+    <p>Total Pages - {{total_pages}}</p>
+    <p>Total Animals - {{count}}</p>
 </div>
 {% endblock %}

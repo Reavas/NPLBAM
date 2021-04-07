@@ -3,8 +3,14 @@
     <head>
         <meta charset="UTF-8" />
         <title>NPLB - {{ title }}</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
         <link rel="stylesheet" href="static/css/normalize.css" />
+        <link rel="stylesheet" href="static/css/styles.css" />
         <link rel="stylesheet" href="static/css/{% block css %}{% endblock %}.css" />
+        {% block js %}{% endblock %}
     </head>
     <body>
         <header>
@@ -14,17 +20,19 @@
             </div>
             <div class="links">
                 <!--Needs to be Hidden from non-NPLB -->
-                {% if title != "Dashboard" %}
+                {% if title != "Dashboard" and role < 1 %}
                     <a href="/dashboard">Dashboard</a>
                 {% endif %}
-                <!--Needs to be Hidden from non-Admin -->
-                {% if title != "Accounts" %}
-                    <a href="/accounts">Accounts</a>
-                {% endif %}
-                
                 <!--Every User Can see and Use-->
                 {% if title != "Animals" %}
                     <a href="/animals">Animals</a>
+                {% endif %}
+                <!--Needs to be Hidden from non-Admin -->
+                {% if title != "Accounts" and role < 1 %}
+                    <a href="/accounts">Accounts</a>
+                {% endif %}
+                {% if title != "Organizations" and role < 2 %}
+                    <a href="/organizations">Orgs</a>
                 {% endif %}
                 {% if title != "Options" %}
                     <a href="/options">Options</a>
@@ -33,6 +41,18 @@
             </div>
         </header>   
         <main>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class=flashes>
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+                </div>
+                {% endif %}
+            {% endwith %}
+
             {% block main %}{% endblock %}
         </main>
     </body>
